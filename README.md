@@ -36,9 +36,36 @@ go run main.go version  # show current version
 | `20260401213905_seed_todos.sql` | Seed initial todos data |
 | `20260401224527_add_todo_group_id_to_todos_table.sql` | Add `todo_group_id` column to `todos` |
 
+## Goose Tracking Table
+
+Goose automatically creates a `goose_db_version` table to track applied migrations:
+
+``` bash
+goose_db_version
+├── id         INTEGER
+├── version_id INTEGER NOT NULL
+├── is_applied INTEGER NOT NULL
+└── tstamp     TIMESTAMP
+```
+
+Example state after all migrations are applied:
+
+| id | version_id | is_applied | tstamp |
+| -- | ---------- | ---------- | ------ |
+| 1 | 0 | 1 | 2026-04-01 14:34:34 |
+| 2 | 1 | 1 | 2026-04-01 14:34:41 |
+| 3 | 2 | 1 | 2026-04-01 14:34:41 |
+| 4 | 3 | 1 | 2026-04-01 14:34:41 |
+| 5 | 20260401213605 | 1 | 2026-04-01 14:39:18 |
+| 6 | 20260401213905 | 1 | 2026-04-01 14:39:18 |
+| 7 | 20260401144235 | 1 | 2026-04-01 14:51:58 |
+| 8 | 20260401224527 | 1 | 2026-04-01 14:51:58 |
+
+`version_id` corresponds to the numeric prefix of each migration file. `is_applied = 1` means the migration has been applied; on rollback, goose inserts a new row with `is_applied = 0`.
+
 ## Schema
 
-```
+``` bash
 users
 ├── id
 ├── name
