@@ -38,6 +38,7 @@ func main() {
 
 	switch command {
 	case "up":
+		// Allow missing migrations to avoid errors if there are no new migrations to apply.
 		if err := goose.Up(db, migrationsPath, goose.WithAllowMissing()); err != nil {
 			log.Fatalf("goose up: %v", err)
 		}
